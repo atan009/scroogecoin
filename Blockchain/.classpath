@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="C:/Users/Tan/Desktop/Blockchain/algs4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Tan/Desktop/Blockchain/blockChainGrader.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Tan/Desktop/Blockchain/rsa.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Tan/Desktop/Blockchain/txCoinGrader.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Tan/Documents/GitHub/scroogecoin/Blockchain/algs4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Tan/Documents/GitHub/scroogecoin/Blockchain/blockChainGrader.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Tan/Documents/GitHub/scroogecoin/Blockchain/rsa.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Tan/Documents/GitHub/scroogecoin/Blockchain/txCoinGrader.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

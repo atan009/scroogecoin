@@ -39,14 +39,34 @@ public class BlockChain {
    /* create an empty block chain with just a genesis block.
     * Assume genesis block is a valid block
     */
+   private ArrayList<BlockNode> heads;  
+   private HashMap<ByteArrayWrapper, BlockNode> H;    
+   private int height;   
+   private BlockNode maxHeightBlock;    
+   private TransactionPool txPool;
+   
+   
    public BlockChain(Block genesisBlock) {
       // IMPLEMENT THIS
+	   UTXOPool uPool = new UTXOPool();      
+	    Transaction coinbase = genesisBlock.getCoinbase();      
+	    UTXO utxoCoinbase = new UTXO(coinbase.getHash(), 0);      
+	    uPool.addUTXO(utxoCoinbase, coinbase.getOutput(0));      
+	    BlockNode genesis = new BlockNode(genesisBlock, null, uPool);      
+	    heads = new ArrayList<BlockNode>();      
+	    heads.add(genesis);      
+	    H = new HashMap<ByteArrayWrapper, BlockNode>();      
+	    H.put(new ByteArrayWrapper(genesisBlock.getHash()), genesis);      
+	    height = 1;      
+	    maxHeightBlock = genesis;      
+	    txPool = new TransactionPool();
    }
 
    /* Get the maximum height block
     */
    public Block getMaxHeightBlock() {
       // IMPLEMENT THIS
+	   return maxHeightBlock.b;
    }
    
    /* Get the UTXOPool for mining a new block on top of 
@@ -54,12 +74,14 @@ public class BlockChain {
     */
    public UTXOPool getMaxHeightUTXOPool() {
       // IMPLEMENT THIS
+	   return maxHeightBlock.uPool;
    }
    
    /* Get the transaction pool to mine a new block
     */
    public TransactionPool getTransactionPool() {
       // IMPLEMENT THIS
+	   return txPool;
    }
 
    /* Add a block to block chain if it is valid.
@@ -72,11 +94,13 @@ public class BlockChain {
     */
    public boolean addBlock(Block b) {
        // IMPLEMENT THIS
+	   return true;
    }
 
    /* Add a transaction in transaction pool
     */
    public void addTransaction(Transaction tx) {
       // IMPLEMENT THIS
+	   txPool.addTransaction(tx);
    }
 }
