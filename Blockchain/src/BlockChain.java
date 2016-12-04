@@ -94,7 +94,27 @@ public class BlockChain {
     */
    public boolean addBlock(Block b) {
        // IMPLEMENT THIS
-	   return true;
+	   
+	   byte[] prevBlockHash = b.getPrevBlockHash();
+	   
+	   if (prevBlockHash == null)
+	   {
+		   return false;
+	   }
+	   
+	   //BlockNode NewNode 
+	   //TxHandler TestHandler = new TxHandler(parentNode.get);
+	   
+	   int blockChainHeight = this.height;
+	   if (blockChainHeight <= height - (CUT_OFF_AGE + 1))
+	   {
+		   return false;
+	   }
+	   
+	   else
+	   {
+		   return true;
+	   }
    }
 
    /* Add a transaction in transaction pool
