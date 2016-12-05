@@ -1,14 +1,29 @@
+//copied from DropboxTestBlockChain.java
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class TxHandler {
 
 	/* Creates a public ledger whose current UTXOPool (collection of unspent 
 	 * transaction outputs) is utxoPool. This should make a defensive copy of 
 	 * utxoPool by using the UTXOPool(UTXOPool uPool) constructor.
 	 */
+	private UTXOPool upool;
 	
-	
-	
+	public UTXOPool getUpool() {
+		return upool;
+	}
+
+	public void setUpool(UTXOPool upool) {
+		this.upool = upool;
+	}
+
 	public TxHandler(UTXOPool utxoPool) {
 		// IMPLEMENT THIS
+		setUpool(new UTXOPool(utxoPool));
 	}
 
 	/* Returns true if 
@@ -23,7 +38,80 @@ public class TxHandler {
 
 	public boolean isValidTx(Transaction tx) {
 		// IMPLEMENT THIS
-		return false;
+		double sumIn = 0.0;
+		double sumOut = 0.0;
+		
+		ArrayList<UTXO> UTXOchk = new ArrayList<UTXO>();
+		
+		//condition 1
+		for(Transaction.Input it : tx.getInputs()){
+			UTXO currUTXO = new UTXO(it.prevTxHash, it.outputIndex);
+			
+			if(UTXOchk.contains(currUTXO)){
+				return false;
+			}
+			
+			UTXOchk.add(currUTXO);
+			
+			if(getUpool().contains(currUTXO) == false){
+				return false;
+			}
+			
+			sumIn += getUpool().getTxOutput(currUTXO).value;
+			
+			
+		}
+		
+		//condition 2
+		int index = 0;
+		for(Transaction.Input it : tx.getInputs())
+		{
+			UTXO currUTXO = new UTXO(it.prevTxHash, it.outputIndex);
+
+			
+			//if (tx.getRawTx() != it.signature)FUCK MY LIFE
+			//if (tx.getInput(it.outputIndex) != it)
+			//if (!tx.getOutput(currUTXO.getIndex()).address.verifySignature(tx.getRawDataToSign(it.outputIndex), it.signature))
+			//if (!tx.getOutput(currUTXO.getIndex()).address.verifySignature(tx.getRawTx(), it.signature))
+			//if (!tx.getOutput(it.outputIndex).address.verifySignature(tx.getRawTx(), it.signature))
+			//if (!tx.getOutput(0).address.verifySignature(tx.getRawTx(), it.signature))
+			//if (!tx.getOutput(index).address.verifySignature(tx.getRawTx(), it.signature))
+			//if (!tx.getOutput(it.outputIndex).address.verifySignature(tx.getRawDataToSign(it.outputIndex), it.signature))
+			//if (!tx.getOutput(it.outputIndex).address.verifySignature(tx.getRawDataToSign(currUTXO.getIndex()), it.signature))
+			//if (!tx.getOutput(currUTXO.getIndex()).address.verifySignature(tx.getRawDataToSign(currUTXO.getIndex()), it.signature))
+			//if (!upool.getTxOutput(currUTXO).address.verifySignature(tx.getRawTx(), it.signature))
+			//if (!upool.getTxOutput(currUTXO).address.verifySignature(tx.getRawDataToSign(0), it.signature))
+			//int index = 0;
+			
+			//ArrayList<Output> OPs = tx.getOutputs();
+			if (!upool.getTxOutput(currUTXO).address.verifySignature(tx.getRawDataToSign(index), it.signature))//10 damn hours
+			{
+				return false;
+			}
+			index++;
+		}
+		
+		//condition 3
+		
+		
+		//condition 4
+		for(Transaction.Output it : tx.getOutputs())
+		{
+			
+			if (it.value < 0)
+			{
+				return false;
+			}
+			sumOut += it.value;
+		}
+		
+		//condition 5
+		if (sumOut > sumIn)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 
 	/* Handles each epoch by receiving an unordered array of proposed 
