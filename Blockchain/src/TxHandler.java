@@ -121,7 +121,35 @@ public class TxHandler {
 	 */
 	public Transaction[] handleTxs(Transaction[] possibleTxs) {
 		// IMPLEMENT THIS
-		return null;
+		//Transaction[] validArray;
+		//TransactionPool validArray;
+		//UTXO currUTXO;
+		//currUTXO.
+		
+		ArrayList<Transaction> validArray;
+		
+		for (int i = 0; i < possibleTxs.length;i++)
+		{
+			if(!isValidTx(possibleTxs[i]))
+			{
+				possibleTxs[i] = null;
+			}
+			else
+			{
+				for(Transaction.Input it : possibleTxs[i].getInputs())
+				{
+					UTXO currUTXO = new UTXO(it.prevTxHash, it.outputIndex);
+					
+
+					upool.removeUTXO(currUTXO);
+					//possibleTxs[i] = null;
+				}
+			}
+		}
+		
+		//possibleTxs = validArray.to;
+		setUpool(upool);
+		return possibleTxs;
 	}
 
 } 
