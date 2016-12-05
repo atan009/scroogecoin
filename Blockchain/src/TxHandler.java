@@ -126,7 +126,7 @@ public class TxHandler {
 		//UTXO currUTXO;
 		//currUTXO.
 		
-		ArrayList<Transaction> validArray;
+		//ArrayList<Transaction> validArray;//i give up on converting back and forth
 		
 		for (int i = 0; i < possibleTxs.length;i++)
 		{
@@ -136,7 +136,7 @@ public class TxHandler {
 			}
 			else
 			{
-				for(Transaction.Input it : possibleTxs[i].getInputs())
+				for(Transaction.Input it : possibleTxs[i].getInputs())//discard old junk
 				{
 					UTXO currUTXO = new UTXO(it.prevTxHash, it.outputIndex);
 					
@@ -144,6 +144,13 @@ public class TxHandler {
 					upool.removeUTXO(currUTXO);
 					//possibleTxs[i] = null;
 				}
+				
+				for (int j = 0; j < possibleTxs[i].getOutputs().size(); j++)//add in the good new stuff
+				{
+					UTXO currUTXO = new UTXO(possibleTxs[i].getHash(), j);
+					upool.addUTXO(currUTXO, possibleTxs[i].getOutput(j));
+				}
+				
 			}
 		}
 		
