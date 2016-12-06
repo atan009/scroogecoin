@@ -9,6 +9,12 @@ import java.util.HashMap;
 public class BlockChain {
    public static final int CUT_OFF_AGE = 10;
 
+   private ArrayList<BlockNode> heads;  
+   private HashMap<ByteArrayWrapper, BlockNode> H;    
+   private int height;   
+   private BlockNode maxHeightBlock;    
+   private TransactionPool txPool;
+   
    // all information required in handling a block in block chain
    private class BlockNode {
       public Block b;
@@ -39,11 +45,7 @@ public class BlockChain {
    /* create an empty block chain with just a genesis block.
     * Assume genesis block is a valid block
     */
-   private ArrayList<BlockNode> heads;  
-   private HashMap<ByteArrayWrapper, BlockNode> H;    
-   private int height;   
-   private BlockNode maxHeightBlock;    
-   private TransactionPool txPool;
+   
    
    
    public BlockChain(Block genesisBlock) {
@@ -94,27 +96,45 @@ public class BlockChain {
     */
    public boolean addBlock(Block b) {
        // IMPLEMENT THIS
-	   
-	   byte[] prevBlockHash = b.getPrevBlockHash();
-	   
-	   if (prevBlockHash == null)
+	   if (b.getPrevBlockHash() == null)
 	   {
 		   return false;
 	   }
 	   
-	   //BlockNode NewNode 
-	   //TxHandler TestHandler = new TxHandler(parentNode.get);
+
+	   BlockNode pNode = H.get(new ByteArrayWrapper(b.getPrevBlockHash()));
 	   
-	   int blockChainHeight = this.height;
-	   if (blockChainHeight <= height - (CUT_OFF_AGE + 1))
+
+	   UTXOPool newPool = new UTXOPool();
+	   Transaction CB = b.getCoinbase();
+	   
+	   for (int i = 0; i < CB.getOutputs().size(); i++)
+	   {
+		   UTXO UTXOCB = new UTXO(CB.getHash(), i);
+		   newPool.addUTXO(UTXOCB, CB.getOutput(i));
+	   }
+	  
+	   BlockNode newBN = new BlockNode(b, pNode, newPool);
+	   
+
+	   for (int i = 0; i < newBN.b.getTransactions().size(); i++)
+	   {
+		   txPool.removeTransaction(newBN.b.getTransaction(i).getHash());
+	   }
+
+	   H.put(new ByteArrayWrapper(b.getHash()), newBN);
+	   
+	   if (newBN.height > height)
+	   {
+		   height = newBN.height;
+		   maxHeightBlock = newBN;
+	   }
+	   
+	   if (newBN.height <= height - CUT_OFF_AGE)
 	   {
 		   return false;
 	   }
-	   
-	   else
-	   {
-		   return true;
-	   }
+	   return true;
    }
 
    /* Add a transaction in transaction pool

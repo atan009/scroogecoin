@@ -47,9 +47,11 @@ public class TxHandler {
 		for(Transaction.Input it : tx.getInputs()){
 			UTXO currUTXO = new UTXO(it.prevTxHash, it.outputIndex);
 			
+			
 			if(UTXOchk.contains(currUTXO)){
 				return false;
 			}
+			
 			
 			UTXOchk.add(currUTXO);
 			
@@ -127,7 +129,7 @@ public class TxHandler {
 		//currUTXO.
 		
 		//ArrayList<Transaction> validArray;//i give up on converting back and forth
-		
+		ArrayList<Transaction> ValidTxs = new ArrayList<Transaction>();
 		for (int i = 0; i < possibleTxs.length;i++)
 		{
 			if(!isValidTx(possibleTxs[i]))
@@ -136,6 +138,7 @@ public class TxHandler {
 			}
 			else
 			{
+				ValidTxs.add(possibleTxs[i]);
 				for(Transaction.Input it : possibleTxs[i].getInputs())//discard old junk
 				{
 					UTXO currUTXO = new UTXO(it.prevTxHash, it.outputIndex);
@@ -154,9 +157,23 @@ public class TxHandler {
 			}
 		}
 		
-		//possibleTxs = validArray.to;
 		setUpool(upool);
-		return possibleTxs;
+		
+		return ValidTxs.toArray(new Transaction[ValidTxs.size()]);
+	}
+	
+	/* Returns the current UTXO pool.If no outstanding UTXOs, returns an empty (non-null) UTXOPool object. */
+	public UTXOPool getUTXOPool()
+	{
+		if (upool.getAllUTXO().isEmpty())
+		{
+			return new UTXOPool();
+		}
+		
+		else
+		{
+			return upool;
+		}
 	}
 
 } 
